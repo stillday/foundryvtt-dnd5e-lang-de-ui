@@ -17,6 +17,7 @@ You have interesst to help to Develop this Project, than fork please this Projec
 - [ ] only login user can write translation, with log
 - [ ] rework design. Color, Responsive, ...
 - [ ] include new interface
+- [ ] include international lang function, [example from git project](https://github.com/dreitzner/kit-i18n)
 
 
 
