@@ -7,6 +7,7 @@ import { browser } from "$app/env";
 import { isAuthenticated } from "$lib/auth";
 import { user } from "$lib/store";
 import { setCookie, translatorUser } from "$lib/cookie";
+import { cancelButton } from "$lib/cancel";
 
 // import type {  } from  "tinymce";
 export let file;
@@ -66,8 +67,7 @@ function safeJson(index, name) {
 // when use dont want safe
 function dontSafe(entry, index, name) {
 	// ToDo: Include copy to clipboard
-
-	showMessage = !showMessage;
+	if (showMessage) showMessage = !showMessage;
 	safeJson(index, name);
 }
 
@@ -82,7 +82,7 @@ function dontShowSafe(entry, index, name) {
 
 // when user cancel the change
 function cancelIt() {
-	showMessage = !showMessage;
+	if (showMessage) showMessage = !showMessage;
 }
 
 function cancelShowIt() {
@@ -263,9 +263,10 @@ if ($isAuthenticated) {
 									</h3>
 										<input type="text" id="{item.id}" name="dtname" bind:value="{item.name}" disabled={!shown.name[i]}>
 										{#if $isAuthenticated}
-										<button on:click={() => handelClick(i, 'name')} class="btn">
-											{shown.name[i] ?'safe' : 'Edit'}
-										</button>
+											<button on:click={() => handelClick(i, 'name')} class="btn">
+												{shown.name[i] ?'safe' : 'Edit'}
+											</button>
+											<button on:click={() => cancelButton(i, 'name')} class="btn btn--color-cancel" disabled={!shown.name[i]}>Abbrechen</button>
 										{:else}
 											<button disabled>Edit</button>
 										{/if}
@@ -275,9 +276,9 @@ if ($isAuthenticated) {
 								<h3>Beschreibung</h3>
 									<div type="text" id="{file + '.description.' + [i]} description-feel"  class="description{i}">{@html item?.description ?? ''}</div>
 									{#if $isAuthenticated}
-									<button on:click={() => handelClick(i, 'description')} class="btn" id="{file + '.description.' + [i]}">
-										{shown.description[i] ? 'safe' : 'Edit'}
-									</button>
+										<button on:click={() => handelClick(i, 'description')} class="btn" id="{file + '.description.' + [i]}">
+											{shown.description[i] ? 'safe' : 'Edit'}
+										</button>
 									{:else}
 										<button disabled>Edit</button>
 									{/if}
