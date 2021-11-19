@@ -7,7 +7,6 @@ import { browser } from "$app/env";
 import { isAuthenticated } from "$lib/auth";
 import { user } from "$lib/store";
 import { setCookie, translatorUser } from "$lib/cookie";
-import { cancelButton } from "$lib/cancel";
 
 // import type {  } from  "tinymce";
 export let file;
@@ -41,6 +40,15 @@ const handelClick = async(index, name) => {
 	}
 }
 
+export function cancelButton(index, name) {
+	shown[name][index] = !shown[name][index];
+	if (name !== 'description') return;
+	if (editorTiny) {
+		tinymce.activeEditor.remove();
+		editorTiny = null;
+		inputHTML = null;
+	 }
+}
 
 function safeJson(index, name) {
 	shown[name][index] = !shown[name][index];
@@ -88,6 +96,8 @@ function cancelIt() {
 function cancelShowIt() {
 	showSaveMessage = !showSaveMessage;
 }
+
+
 
 async function safeAtJson(entry, index, name) {
 	
@@ -266,7 +276,9 @@ if ($isAuthenticated) {
 											<button on:click={() => handelClick(i, 'name')} class="btn">
 												{shown.name[i] ?'safe' : 'Edit'}
 											</button>
-											<button on:click={() => cancelButton(i, 'name')} class="btn btn--color-cancel" disabled={!shown.name[i]}>Abbrechen</button>
+											{#if shown.name[i]}
+												<button on:click={() => cancelButton(i, 'name')} class="btn btn--color-cancel">Abbrechen</button>
+											{/if}
 										{:else}
 											<button disabled>Edit</button>
 										{/if}
@@ -279,6 +291,9 @@ if ($isAuthenticated) {
 										<button on:click={() => handelClick(i, 'description')} class="btn" id="{file + '.description.' + [i]}">
 											{shown.description[i] ? 'safe' : 'Edit'}
 										</button>
+										{#if shown.description[i]}
+											<button on:click={() => cancelButton(i, 'description')} class="btn btn--color-cancel">Abbrechen</button>
+										{/if}
 									{:else}
 										<button disabled>Edit</button>
 									{/if}
@@ -288,9 +303,12 @@ if ($isAuthenticated) {
 									<h3>Verbrauchs Material</h3>
 									<textarea type="text" rows="3" cols="50" id="{file + '.material.' + [i]}" bind:value="{item.material}" disabled={!shown.material[i]}></textarea>
 									{#if $isAuthenticated}
-									<button on:click={() => handelClick(i, 'material')} class="btn" id="{file + '.material.' + [i]}">
-										{shown.material[i] ? 'safe' : 'Edit'}
-									</button>
+										<button on:click={() => handelClick(i, 'material')} class="btn" id="{file + '.material.' + [i]}">
+											{shown.material[i] ? 'safe' : 'Edit'}
+										</button>
+										{#if shown.material[i]}
+											<button on:click={() => cancelButton(i, 'material')} class="btn btn--color-cancel">Abbrechen</button>
+										{/if}
 									{:else}
 									<button disabled>Edit</button>
 									{/if}
@@ -300,9 +318,12 @@ if ($isAuthenticated) {
 								<h3>Seite im Buch</h3>
 								<input type="text" id="{'source ' + [i]}" name="dtsource" bind:value="{item.source}" disabled={!shown.source[i]}>
 								{#if $isAuthenticated}
-								<button on:click={() => handelClick(i, 'source')} class="btn">
-									{shown.source[i] ?'safe' : 'Edit'}
-								</button>
+									<button on:click={() => handelClick(i, 'source')} class="btn">
+										{shown.source[i] ?'safe' : 'Edit'}
+									</button>
+									{#if shown.source[i]}
+										<button on:click={() => cancelButton(i, 'source')} class="btn btn--color-cancel">Abbrechen</button>
+									{/if}
 								{:else}
 									<button disabled>Edit</button>
 								{/if}				
